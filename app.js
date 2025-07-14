@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
     return res.send("Shopping List");
 })
 
-//get all items
+// GET /items
 app.get('/items', (req, res) => {
     console.log("GET /items route");
     //if array is empty, display empty message
@@ -21,7 +21,7 @@ app.get('/items', (req, res) => {
     return res.json(items);
 });
 
-// post items
+// POST /items
 app.post('/items', (req, res) => {
     console.log("POST /items route");
     const { name, price } = req.body;
@@ -30,7 +30,18 @@ app.post('/items', (req, res) => {
     return res.json({ added: newItem });
 })
 
+// GET /items/:name
+app.get('/items/:name', (req, res) => {
+    console.log("GET /items/:name route");
+    console.log(req.params.name);
+    // get the item name entered
+    const item = req.params.name;
+    // check if the item is in the shopping list, make generic not on list message if not
 
+    // if it does exist, display the name and price from the items array in the fakeDb
+
+
+})
 
 app.listen(4000, () => {
     console.log("Server running on port 4000")
