@@ -36,7 +36,7 @@ app.post('/items', (req, res) => {
     for (const item of items) {
         if (item.name.toLowerCase() === name.toLowerCase()) {
             return res.status(400).json({
-                message: `Did not create. Item name ${name} already exists`
+                message: `Did not create. Item name ${name} already exists.`
             });
         }
     }
@@ -67,7 +67,7 @@ app.get('/items/:name', (req, res) => {
 
     if (foundItems.length === 0) {
         return res.status(404).json({
-            message: `Item ${name} not found`
+            message: `Item ${name} not found.`
         });
     }
 
@@ -88,7 +88,7 @@ app.patch('/items/:name', (req, res) => {
 
     if (!name | !price) {
         return res.status(400).json({
-            message: "Error missing either {name} param or {price} field "
+            message: "Error missing either {name} param or {price} field."
         });
     }
 
@@ -103,7 +103,7 @@ app.patch('/items/:name', (req, res) => {
     //check flag
     if (!itemFound) {
         return res.status(404).json({
-            message: `Item ${name} not found. Cannot update`
+            message: `Item ${name} not found. Cannot update.`
         });
     }
 
@@ -116,10 +116,60 @@ app.patch('/items/:name', (req, res) => {
     }
 
     return res.status(200).json({
-        message: `Item ${updatedItem.name} updated`,
+        message: `Item ${updatedItem.name} updated.`,
         updatedItem
     });
 })
+
+
+
+//DELETE /items/:name
+//delete a specific item from an array
+app.delete('/items/:name', (req, res) => {
+    //1. check if item exists
+    //2. delete from array
+    const { name } = req.params;
+
+    if (!name) {
+        return res.status(400).json({
+            message: "Error missing {name} param."
+        });
+    }
+
+    let itemFound = false;
+    for (const item of items) {
+        if (item.name.toLowerCase() === name.toLowerCase()) {
+            itemFound = true;
+            break;
+        }
+    }
+
+    //check flag
+    if (!itemFound) {
+        return res.status(404).json({
+            message: `Item ${name} not found. Nothing to delete.`
+        });
+    }
+
+    let itemToDelete = null;
+    for (const item of items) {
+        if (item.name.toLowerCase() === name.toLowerCase()) {
+            itemToDelete = item;
+            console.log(itemToDelete);
+        }
+    }
+
+    const index = items.indexOf(itemToDelete);
+    if (index !== -1) {
+        items.splice(index, 1)
+    }
+
+    return res.status(200).json({
+        message: `Item ${itemToDelete.name} deleted.`
+    });
+
+})
+
 
 app.listen(4000, () => {
     console.log("Server running on port 4000")
