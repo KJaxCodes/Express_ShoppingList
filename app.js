@@ -7,7 +7,7 @@ app.use(express.json());
 
 const items = require('./fakeDb');
 
-//check the root
+//the root displays Shopping List
 
 app.get('/', (req, res) => {
     return res.json("Shopping List");
@@ -52,15 +52,30 @@ app.post('/items', (req, res) => {
 // name could equal anything 'laptop', 'milk', etc.
 app.get('/items/:name', (req, res) => {
     console.log("GET /items/:name route");
-    console.log(req.params.name);
     // get the item name from the URL params
-    const item = req.params.name;
-    // check if the item is in the shopping list, make generic not on list message if not
+    const { name } = req.params;
 
+    // check if the item is in the shopping list, if not make generic not found message
     // if it does exist, display the name and price from the items array in the fakeDb
+    const foundItems = [];
 
+    for (const item of items) {
+        if (item.name.toLowerCase() === name.toLowerCase()) {
+            foundItems.push(item);
+        }
+    }
 
-})
+    if (foundItems.length === 0) {
+        return res.status(404).json({
+            message: `Item ${name} not found`
+        });
+    }
+
+    return res.json({
+        message: "Found item",
+        items: foundItems
+    });
+});
 
 app.listen(4000, () => {
     console.log("Server running on port 4000")
