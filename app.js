@@ -77,6 +77,50 @@ app.get('/items/:name', (req, res) => {
     });
 });
 
+// PATCH /items/:name
+// modify the price of a specific item
+app.patch('/items/:name', (req, res) => {
+    //1. check if item exists
+    //2. get the price
+    //3. update the price, send back updated item
+    const { name } = req.params;
+    const { price } = req.body;
+
+    if (!name | !price) {
+        return res.status(400).json({
+            message: "Error missing either {name} param or {price} field "
+        });
+    }
+
+    let itemFound = false;
+    for (const item of items) {
+        if (item.name.toLowerCase() === name.toLowerCase()) {
+            itemFound = true;
+            break;
+        }
+    }
+
+    //check flag
+    if (!itemFound) {
+        return res.status(404).json({
+            message: `Item ${name} not found. Cannot update`
+        });
+    }
+
+    let updatedItem = null;
+    for (const item of items) {
+        if (item.name.toLowerCase() === name.toLowerCase()) {
+            item.price = price;
+            updatedItem = item;
+        }
+    }
+
+    return res.status(200).json({
+        message: `Item ${updatedItem.name} updated`,
+        updatedItem
+    });
+})
+
 app.listen(4000, () => {
     console.log("Server running on port 4000")
 });
